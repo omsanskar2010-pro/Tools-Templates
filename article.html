@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Article Writing | Tools & Templates</title>
+
+<link rel="icon" type="image/png" href="assets/tt-favicon.png">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364,#6dd5fa);
+  color: white;
+  text-align: center;
+}
+
+header { padding: 15px; }
+
+.logo { width: 120px; }
+
+h1 { color: gold; }
+
+.container { padding: 15px; }
+
+input, textarea {
+  width: 90%;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+}
+
+button {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.generate { background: #00cec9; }
+.sample { background: #fdcb6e; }
+.reset { background: #d63031; color:white; }
+.download { background: #6c5ce7; color:white; }
+.print { background: #00b894; color:white; }
+
+/* Output */
+.output {
+  background: white;
+  color: black;
+  margin: 20px;
+  padding: 25px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+/* Mobile */
+@media(max-width:600px){
+  input, textarea { width: 95%; }
+  .logo { width: 90px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="assets/tt-logo.png" class="logo">
+  <h1>Article Writing Tool</h1>
+</header>
+
+<div class="container">
+
+<input id="title" placeholder="Article Title">
+<input id="author" placeholder="Author Name">
+
+<textarea id="intro" rows="3" placeholder="Introduction"></textarea>
+<textarea id="body" rows="5" placeholder="Main Content (add points, arguments, examples)"></textarea>
+<textarea id="conclusion" rows="3" placeholder="Conclusion"></textarea>
+
+<br>
+
+<button class="generate" onclick="generateArticle()">Generate</button>
+<button class="sample" onclick="fillSample()">Sample</button>
+<button class="reset" onclick="resetForm()">Reset</button>
+
+<br>
+
+<button class="download" onclick="downloadTXT()">Download TXT</button>
+<button class="print" onclick="printArticle()">Print / Save PDF</button>
+<button class="download" onclick="sendGmail()">Send via Gmail</button>
+
+</div>
+
+<div id="output" class="output"></div>
+
+<script>
+
+/* Generate */
+function generateArticle(){
+  let title = document.getElementById("title").value;
+  let author = document.getElementById("author").value;
+  let intro = document.getElementById("intro").value;
+  let body = document.getElementById("body").value;
+  let conclusion = document.getElementById("conclusion").value;
+
+  let article = `
+<h2 style="text-align:center">${title}</h2>
+
+<p><b>By ${author}</b></p>
+
+<br>
+
+<p><b>Introduction:</b><br>${intro}</p>
+
+<br>
+
+<p><b>Main Content:</b><br>${body}</p>
+
+<br>
+
+<p><b>Conclusion:</b><br>${conclusion}</p>
+`;
+
+  document.getElementById("output").innerHTML = article;
+}
+
+/* Sample */
+function fillSample(){
+  document.getElementById("title").value = "Importance of Discipline in Student Life";
+  document.getElementById("author").value = "Pragya Sanskriti";
+
+  document.getElementById("intro").value =
+  "Discipline plays a crucial role in shaping a student's life and future.";
+
+  document.getElementById("body").value =
+  "A disciplined student follows a routine, respects time, and focuses on goals. It helps in improving academic performance and building strong character.";
+
+  document.getElementById("conclusion").value =
+  "Thus, discipline is the key to success and every student should develop it.";
+}
+
+/* Reset */
+function resetForm(){
+  document.getElementById("title").value = "";
+  document.getElementById("author").value = "";
+  document.getElementById("intro").value = "";
+  document.getElementById("body").value = "";
+  document.getElementById("conclusion").value = "";
+  document.getElementById("output").innerHTML = "";
+}
+
+/* TXT */
+function downloadTXT(){
+  let text = document.getElementById("output").innerText;
+  let blob = new Blob([text], {type:"text/plain"});
+  let link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "article.txt";
+  link.click();
+}
+
+/* Print */
+function printArticle(){
+  let content = document.getElementById("output").innerHTML;
+
+  let win = window.open('', '', 'width=800,height=600');
+
+  win.document.write(`
+    <html>
+    <head>
+    <title>Article</title>
+    <style>
+      body{font-family:Arial;padding:20px;}
+    </style>
+    </head>
+    <body>${content}</body>
+    </html>
+  `);
+
+  win.document.close();
+  win.print();
+}
+
+/* Gmail */
+function sendGmail(){
+  let content = document.getElementById("output").innerText;
+
+  if(content.trim() === ""){
+    alert("Generate article first!");
+    return;
+  }
+
+  let subject = encodeURIComponent("Article Writing");
+  let body = encodeURIComponent(content);
+
+  let url = `https://mail.google.com/mail/?view=cm&fs=1&su=${subject}&body=${body}`;
+  window.open(url, "_blank");
+}
+
+</script>
+
+</body>
+</html>

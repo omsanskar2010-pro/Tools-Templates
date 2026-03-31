@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Excuse Generator | Tools & Templates</title>
+
+<link rel="icon" type="image/png" href="assets/tt-favicon.png">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364,#6dd5fa);
+  color: white;
+  text-align: center;
+}
+
+header { padding: 15px; }
+.logo { width: 120px; }
+
+h1 { color: gold; }
+
+.container { padding: 15px; }
+
+select, input {
+  width: 90%;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+}
+
+button {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.generate { background: #00cec9; }
+.sample { background: #fdcb6e; }
+.reset { background: #d63031; color:white; }
+.download { background: #6c5ce7; color:white; }
+.print { background: #00b894; color:white; }
+
+/* Output */
+.output {
+  background: white;
+  color: black;
+  margin: 20px;
+  padding: 25px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+/* History */
+.history {
+  background: rgba(255,255,255,0.1);
+  margin: 15px;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+/* Mobile */
+@media(max-width:600px){
+  select, input { width: 95%; }
+  .logo { width: 90px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="assets/tt-logo.png" class="logo">
+  <h1>Excuse Generator</h1>
+</header>
+
+<div class="container">
+
+<select id="type">
+  <option value="">Select Type</option>
+  <option>School</option>
+  <option>Office</option>
+  <option>Family</option>
+</select>
+
+<input id="name" placeholder="Your Name">
+<input id="reason" placeholder="Optional Custom Reason">
+
+<br>
+
+<button class="generate" onclick="generateExcuse()">Generate</button>
+<button class="sample" onclick="fillSample()">Sample</button>
+<button class="reset" onclick="resetForm()">Reset</button>
+
+<br>
+
+<button class="download" onclick="downloadTXT()">Download TXT</button>
+<button class="print" onclick="printExcuse()">Print / Save PDF</button>
+<button class="download" onclick="sendGmail()">Send via Gmail</button>
+
+</div>
+
+<div id="output" class="output"></div>
+
+<div class="history">
+  <h3>History</h3>
+  <ul id="historyList"></ul>
+</div>
+
+<script>
+
+/* Excuse data */
+const excuses = {
+  School: [
+    "I was not feeling well and had a fever.",
+    "There was a family function at home.",
+    "I had to visit a doctor urgently."
+  ],
+  Office: [
+    "I was stuck in heavy traffic.",
+    "I had a personal emergency.",
+    "Internet connection issue caused delay."
+  ],
+  Family: [
+    "I was busy with household work.",
+    "There was a sudden guest visit.",
+    "I had health issues."
+  ]
+};
+
+/* Generate */
+function generateExcuse(){
+  let type = document.getElementById("type").value;
+  let name = document.getElementById("name").value;
+  let custom = document.getElementById("reason").value;
+
+  if(type === "" || name === ""){
+    alert("Please fill required fields!");
+    return;
+  }
+
+  let random = excuses[type][Math.floor(Math.random()*excuses[type].length)];
+  let finalReason = custom ? custom : random;
+
+  let excuse = `
+<p><b>Subject:</b> Apology / Explanation</p>
+
+<p>Respected Sir/Madam,</p>
+
+<p>I, ${name}, sincerely apologize. ${finalReason}</p>
+
+<p>Kindly grant me permission and excuse my absence.</p>
+
+<p>Thank you.</p>
+
+<p>Yours sincerely,<br>${name}</p>
+`;
+
+  document.getElementById("output").innerHTML = excuse;
+
+  saveHistory(finalReason);
+}
+
+/* Sample (UPDATED) */
+function fillSample(){
+  document.getElementById("type").value = "School";
+  document.getElementById("name").value = "BMW M5";
+  document.getElementById("reason").value = "";
+}
+
+/* Reset */
+function resetForm(){
+  document.getElementById("type").value = "";
+  document.getElementById("name").value = "";
+  document.getElementById("reason").value = "";
+  document.getElementById("output").innerHTML = "";
+}
+
+/* History */
+function saveHistory(text){
+  let list = document.getElementById("historyList");
+  let li = document.createElement("li");
+  li.textContent = text;
+  list.prepend(li);
+}
+
+/* TXT */
+function downloadTXT(){
+  let text = document.getElementById("output").innerText;
+  let blob = new Blob([text], {type:"text/plain"});
+  let link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "excuse.txt";
+  link.click();
+}
+
+/* Print */
+function printExcuse(){
+  let content = document.getElementById("output").innerHTML;
+
+  let win = window.open('', '', 'width=800,height=600');
+
+  win.document.write(`
+    <html>
+    <head>
+    <title>Excuse</title>
+    <style>
+      body{font-family:Arial;padding:20px;}
+    </style>
+    </head>
+    <body>${content}</body>
+    </html>
+  `);
+
+  win.document.close();
+  win.print();
+}
+
+/* Gmail */
+function sendGmail(){
+  let content = document.getElementById("output").innerText;
+
+  if(content.trim() === ""){
+    alert("Generate excuse first!");
+    return;
+  }
+
+  let subject = encodeURIComponent("Excuse Letter");
+  let body = encodeURIComponent(content);
+
+  let url = `https://mail.google.com/mail/?view=cm&fs=1&su=${subject}&body=${body}`;
+  window.open(url, "_blank");
+}
+
+</script>
+
+</body>
+</html>

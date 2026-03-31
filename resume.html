@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Resume Builder | Tools & Templates</title>
+
+<link rel="icon" type="image/png" href="assets/tt-favicon.png">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364,#6dd5fa);
+  color: white;
+  text-align: center;
+}
+
+header { padding: 15px; }
+
+.logo { width: 120px; }
+
+h1 { color: gold; }
+
+.container { padding: 15px; }
+
+input, textarea {
+  width: 90%;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+}
+
+button {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.generate { background: #00cec9; }
+.sample { background: #fdcb6e; }
+.reset { background: #d63031; color:white; }
+.download { background: #6c5ce7; color:white; }
+.print { background: #00b894; color:white; }
+
+/* Output */
+.output {
+  background: white;
+  color: black;
+  margin: 20px;
+  padding: 25px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+/* Resume Style */
+.resume h2 { margin-bottom: 5px; }
+.resume p { margin: 3px 0; }
+.section { margin-top: 15px; }
+.section h3 { border-bottom: 1px solid black; }
+
+@media(max-width:600px){
+  input, textarea { width: 95%; }
+  .logo { width: 90px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="assets/tt-logo.png" class="logo">
+  <h1>Resume Builder</h1>
+</header>
+
+<div class="container">
+
+<input id="name" placeholder="Full Name">
+<input id="email" placeholder="Email">
+<input id="phone" placeholder="Phone Number">
+<input id="skills" placeholder="Skills (comma separated)">
+<textarea id="education" rows="3" placeholder="Education"></textarea>
+<textarea id="experience" rows="3" placeholder="Experience"></textarea>
+<textarea id="projects" rows="3" placeholder="Projects"></textarea>
+
+<br>
+
+<button class="generate" onclick="generateResume()">Generate</button>
+<button class="sample" onclick="fillSample()">Sample</button>
+<button class="reset" onclick="resetForm()">Reset</button>
+
+<br>
+
+<button class="download" onclick="downloadTXT()">Download TXT</button>
+<button class="print" onclick="printResume()">Print / Save PDF</button>
+<button class="download" onclick="sendGmail()">Send via Gmail</button>
+
+</div>
+
+<div id="output" class="output"></div>
+
+<script>
+
+/* Generate */
+function generateResume(){
+  let name = document.getElementById("name").value;
+  let email = document.getElementById("email").value;
+  let phone = document.getElementById("phone").value;
+  let skills = document.getElementById("skills").value;
+  let education = document.getElementById("education").value;
+  let experience = document.getElementById("experience").value;
+  let projects = document.getElementById("projects").value;
+
+  let resume = `
+<div class="resume">
+
+<h2>${name}</h2>
+<p><b>Email:</b> ${email}</p>
+<p><b>Phone:</b> ${phone}</p>
+
+<div class="section">
+<h3>Skills</h3>
+<p>${skills}</p>
+</div>
+
+<div class="section">
+<h3>Education</h3>
+<p>${education}</p>
+</div>
+
+<div class="section">
+<h3>Experience</h3>
+<p>${experience}</p>
+</div>
+
+<div class="section">
+<h3>Projects</h3>
+<p>${projects}</p>
+</div>
+
+</div>
+`;
+
+  document.getElementById("output").innerHTML = resume;
+  saveHistory(resume);
+}
+
+/* Sample */
+function fillSample(){
+  document.getElementById("name").value = "Pragya Sanskriti";
+  document.getElementById("email").value = "pragya@gmail.com";
+  document.getElementById("phone").value = "1234567890";
+  document.getElementById("skills").value = "HTML, CSS, JavaScript";
+  document.getElementById("education").value = "Class 12 Student, Science Stream";
+  document.getElementById("experience").value = "Created Student Toolkit Website";
+  document.getElementById("projects").value = "Excuse Generator, Email Tool";
+}
+
+/* Reset */
+function resetForm(){
+  document.getElementById("name").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("phone").value = "";
+  document.getElementById("skills").value = "";
+  document.getElementById("education").value = "";
+  document.getElementById("experience").value = "";
+  document.getElementById("projects").value = "";
+  document.getElementById("output").innerHTML = "";
+}
+
+/* TXT */
+function downloadTXT(){
+  let text = document.getElementById("output").innerText;
+  let blob = new Blob([text], {type:"text/plain"});
+  let link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "resume.txt";
+  link.click();
+}
+
+/* Print */
+function printResume(){
+  let content = document.getElementById("output").innerHTML;
+  let win = window.open('', '', 'width=800,height=600');
+
+  win.document.write(`
+    <html>
+    <head>
+    <title>Resume</title>
+    <style>
+      body{font-family:Arial;padding:20px;}
+      h2{margin-bottom:5px;}
+      h3{border-bottom:1px solid black;}
+    </style>
+    </head>
+    <body>${content}</body>
+    </html>
+  `);
+
+  win.document.close();
+  win.print();
+}
+
+/* Gmail */
+function sendGmail(){
+  let content = document.getElementById("output").innerText;
+
+  if(content.trim() === ""){
+    alert("Please generate resume first!");
+    return;
+  }
+
+  let subject = encodeURIComponent("My Resume");
+  let body = encodeURIComponent(content);
+
+  let url = `https://mail.google.com/mail/?view=cm&fs=1&su=${subject}&body=${body}`;
+  window.open(url, "_blank");
+}
+
+/* History */
+function saveHistory(text){
+  let history = JSON.parse(localStorage.getItem("history") || "[]");
+  history.push(text);
+  localStorage.setItem("history", JSON.stringify(history));
+}
+
+</script>
+
+</body>
+</html>

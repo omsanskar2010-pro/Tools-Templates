@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Letter to Editor | Tools & Templates</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364,#6dd5fa);
+  color: white;
+  text-align: center;
+}
+
+header {
+  padding: 15px;
+}
+
+h1 {
+  color: gold;
+}
+
+.container {
+  padding: 15px;
+}
+
+input, textarea {
+  width: 90%;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+}
+
+textarea {
+  min-height: 130px;
+}
+
+button {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.generate { background: #00cec9; }
+.sample { background: #fdcb6e; }
+.reset { background: #d63031; color:white; }
+.download { background: #6c5ce7; color:white; }
+.print { background: #00b894; color:white; }
+.gmail { background: #d44638; color:white; }
+
+/* Output */
+.output {
+  background: white;
+  color: black;
+  margin: 20px;
+  padding: 25px;
+  border-radius: 10px;
+  text-align: left;
+  white-space: pre-wrap;
+  font-family: "Times New Roman", serif;
+  line-height: 1.7;
+}
+
+/* Mobile */
+@media(max-width:600px){
+  input, textarea { width: 95%; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Letter to Editor</h1>
+
+  <input id="name" placeholder="Enter your name">
+  <button onclick="saveName()">Save Name</button>
+</header>
+
+<div class="container">
+
+<input id="sender" placeholder="Sender Address">
+<input id="receiver" placeholder="Receiver Address (Newspaper)">
+<input id="subject" placeholder="Subject">
+
+<textarea id="body" placeholder="Write your issue..."></textarea>
+
+<br>
+
+<button class="generate" onclick="generate()">Generate</button>
+<button class="sample" onclick="sample()">Sample</button>
+<button class="reset" onclick="resetForm()">Reset</button>
+
+<br>
+
+<button class="download" onclick="downloadTXT()">Download TXT</button>
+<button class="print" onclick="printDoc()">Print / Save PDF</button>
+<button class="gmail" onclick="sendGmail()">Send via Gmail</button>
+
+</div>
+
+<div id="output" class="output"></div>
+
+<script>
+
+/* NAME */
+function saveName(){
+  let n = document.getElementById("name").value;
+  localStorage.setItem("username", n);
+  alert("Name saved!");
+}
+
+window.onload = function(){
+  let saved = localStorage.getItem("username");
+  if(saved) document.getElementById("name").value = saved;
+}
+
+/* GENERATE (CORRECT FORMAT) */
+function generate(){
+  let user = localStorage.getItem("username") || "BMW M5";
+
+  let sender = document.getElementById("sender").value;
+  let receiver = document.getElementById("receiver").value;
+  let subject = document.getElementById("subject").value;
+  let body = document.getElementById("body").value;
+
+  let date = new Date().toLocaleDateString("en-GB", {
+    day:"numeric", month:"long", year:"numeric"
+  });
+
+  let text =
+`${sender}
+
+${receiver}
+
+${date}
+
+To,
+The Editor
+
+Subject: ${subject}
+
+Sir/Madam,
+
+${body}
+
+I request the concerned authorities to take necessary action.
+
+Thanking you,
+Yours faithfully,
+${user}`;
+
+  document.getElementById("output").innerText = text;
+
+  saveHistory(text);
+}
+
+/* SAMPLE */
+function sample(){
+  document.getElementById("sender").value = "BMW M5\nMithapur, India";
+  document.getElementById("receiver").value = "The Editor\nThe Times of India";
+  document.getElementById("subject").value = "Rising Pollution";
+  document.getElementById("body").value = "Through the columns of your esteemed newspaper, I would like to highlight the issue of increasing pollution in our city. It is affecting public health seriously.";
+}
+
+/* RESET */
+function resetForm(){
+  document.querySelectorAll("input, textarea").forEach(el=>el.value="");
+  document.getElementById("output").innerText="";
+}
+
+/* TXT */
+function downloadTXT(){
+  let text = document.getElementById("output").innerText;
+  let blob = new Blob([text], {type:"text/plain"});
+  let link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "letter_to_editor.txt";
+  link.click();
+}
+
+/* PRINT */
+function printDoc(){
+  let content = document.getElementById("output").innerHTML;
+  let win = window.open("", "", "width=800,height=600");
+
+  win.document.write(`
+  <html>
+  <head>
+  <style>body{font-family:Times New Roman;padding:25px;}</style>
+  </head>
+  <body>${content}</body>
+  </html>
+  `);
+
+  win.document.close();
+  win.print();
+}
+
+/* GMAIL */
+function sendGmail(){
+  let subject = encodeURIComponent(document.getElementById("subject").value);
+  let body = encodeURIComponent(document.getElementById("output").innerText);
+
+  window.open(`https://mail.google.com/mail/?view=cm&fs=1&su=${subject}&body=${body}`);
+}
+
+/* HISTORY */
+function saveHistory(text){
+  let history = JSON.parse(localStorage.getItem("history") || "[]");
+  history.push(text);
+  localStorage.setItem("history", JSON.stringify(history));
+}
+
+</script>
+
+</body>
+</html>

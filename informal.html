@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Informal Letter | Tools & Templates</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364,#6dd5fa);
+  color: white;
+  text-align: center;
+}
+
+header {
+  padding: 15px;
+}
+
+h1 {
+  color: gold;
+}
+
+.container {
+  padding: 15px;
+}
+
+input, textarea {
+  width: 90%;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+}
+
+button {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.generate { background: #00cec9; }
+.sample { background: #fdcb6e; }
+.reset { background: #d63031; color:white; }
+.download { background: #6c5ce7; color:white; }
+.print { background: #00b894; color:white; }
+.gmail { background: #d44638; color:white; }
+
+.output {
+  background: white;
+  color: black;
+  margin: 20px;
+  padding: 25px;
+  border-radius: 10px;
+  text-align: left;
+  white-space: pre-wrap;
+  font-family: "Times New Roman", serif;
+  line-height: 1.6;
+}
+
+@media(max-width:600px){
+  input, textarea { width: 95%; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Informal Letter</h1>
+
+  <input id="name" placeholder="Enter your name">
+  <button onclick="saveName()">Save Name</button>
+</header>
+
+<div class="container">
+
+<input id="address" placeholder="Your Address">
+<input id="to" placeholder="To (Friend/Relative)">
+<input id="topic" placeholder="Topic (optional)">
+<textarea id="body" rows="5" placeholder="Write your message..."></textarea>
+
+<br>
+
+<button class="generate" onclick="generateLetter()">Generate</button>
+<button class="sample" onclick="fillSample()">Sample</button>
+<button class="reset" onclick="resetForm()">Reset</button>
+
+<br>
+
+<button class="download" onclick="downloadTXT()">Download TXT</button>
+<button class="print" onclick="printLetter()">Print / Save PDF</button>
+<button class="gmail" onclick="sendGmail()">Send via Gmail</button>
+
+</div>
+
+<div id="output" class="output"></div>
+
+<script>
+
+/* NAME SYSTEM */
+function saveName(){
+  let n = document.getElementById("name").value;
+  localStorage.setItem("username", n);
+  alert("Saved!");
+}
+
+window.onload = function(){
+  let saved = localStorage.getItem("username");
+  if(saved) document.getElementById("name").value = saved;
+}
+
+/* GENERATE LETTER */
+function generateLetter(){
+  let user = localStorage.getItem("username") || "BMW M5";
+
+  let address = document.getElementById("address").value;
+  let to = document.getElementById("to").value;
+  let topic = document.getElementById("topic").value;
+  let body = document.getElementById("body").value;
+
+  let date = new Date().toLocaleDateString("en-GB", {
+    day:"numeric", month:"long", year:"numeric"
+  });
+
+  let text = 
+`${address}
+
+${date}
+
+Dear ${to},
+
+${topic ? topic + "\n\n" : ""}${body}
+
+Yours lovingly,
+${user}`;
+
+  document.getElementById("output").innerText = text;
+
+  saveHistory(text);
+}
+
+/* SAMPLE */
+function fillSample(){
+  document.getElementById("address").value = "BMW M5\nMithapur, India";
+  document.getElementById("to").value = "Rahul";
+  document.getElementById("topic").value = "My Vacation";
+  document.getElementById("body").value = "I recently went on a vacation and had a great time. I wish you were there!";
+}
+
+/* RESET */
+function resetForm(){
+  document.querySelectorAll("input, textarea").forEach(el=>el.value="");
+  document.getElementById("output").innerText="";
+}
+
+/* TXT */
+function downloadTXT(){
+  let text = document.getElementById("output").innerText;
+  let blob = new Blob([text], {type: "text/plain"});
+  let link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "informal-letter.txt";
+  link.click();
+}
+
+/* PRINT */
+function printLetter(){
+  let content = document.getElementById("output").innerHTML;
+  let win = window.open('', '', 'width=800,height=600');
+
+  win.document.write(`
+    <html>
+    <head>
+    <style>body{font-family:Times New Roman;padding:25px;}</style>
+    </head>
+    <body>${content}</body>
+    </html>
+  `);
+
+  win.document.close();
+  win.print();
+}
+
+/* GMAIL */
+function sendGmail(){
+  let subject = encodeURIComponent("Informal Letter");
+  let body = encodeURIComponent(document.getElementById("output").innerText);
+
+  window.open(`https://mail.google.com/mail/?view=cm&fs=1&su=${subject}&body=${body}`);
+}
+
+/* HISTORY */
+function saveHistory(text){
+  let history = JSON.parse(localStorage.getItem("history") || "[]");
+  history.push(text);
+  localStorage.setItem("history", JSON.stringify(history));
+}
+
+</script>
+
+</body>
+</html>

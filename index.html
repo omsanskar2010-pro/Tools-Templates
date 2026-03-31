@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Tools & Templates</title>
+
+<link rel="icon" type="image/png" href="assets/tt-favicon.png">
+
+<!-- SEO -->
+<meta name="description" content="Free student tools like Resume Generator, Article Writer, Excuse Generator and more.">
+<meta name="keywords" content="student tools, resume generator, article writer, excuse generator, templates">
+<meta name="author" content="Om Sanskar">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364,#6dd5fa);
+  color: white;
+  text-align: center;
+}
+
+header {
+  padding: 20px;
+}
+
+.logo {
+  width: 130px;
+}
+
+h1 {
+  color: gold;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  padding: 20px;
+}
+
+.card {
+  background: rgba(255,255,255,0.1);
+  padding: 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.card:hover {
+  background: rgba(255,255,255,0.25);
+  transform: scale(1.05);
+}
+
+footer {
+  margin-top: 20px;
+  padding: 15px;
+  font-size: 14px;
+}
+
+/* Mobile */
+@media(max-width:600px){
+  .logo { width: 100px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="assets/tt-logo.png" class="logo">
+  <h1>Tools & Templates</h1>
+  <p>Made by Om Sanskar</p>
+</header>
+
+<!-- TOOLS GRID -->
+<div class="grid">
+
+<div class="card" onclick="go('resume.html')">📄 Resume Generator</div>
+
+<div class="card" onclick="go('application.html')">📝 Application Writing</div>
+
+<div class="card" onclick="go('article.html')">📰 Article Writing</div>
+
+<div class="card" onclick="go('diary.html')">📓 Diary Entry</div>
+
+<div class="card" onclick="go('report.html')">📊 Report Writing</div>
+
+<div class="card" onclick="go('email.html')">📧 Email Writing</div>
+
+<div class="card" onclick="go('formal.html')">📑 Formal Letter</div>
+
+<div class="card" onclick="go('informal.html')">✉️ Informal Letter</div>
+
+<div class="card" onclick="go('notice.html')">📢 Notice Writing</div>
+
+<!-- ✅ NEW BUTTON (CONNECTED) -->
+<div class="card" onclick="go('editor.html')">🗞️ Letter to Editor</div>
+
+<div class="card" onclick="go('excuse.html')">😅 Excuse Generator</div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+
+<p>© 2026 Tools & Templates</p>
+
+<p>
+<a href="privacy.html" style="color:gold;">Privacy Policy</a>
+</p>
+
+<p style="font-size:12px;">
+This website is for educational and entertainment purposes only.
+</p>
+
+</footer>
+
+<script>
+function go(page){
+  window.location.href = page;
+}
+</script>
+
+</body>
+</html>
